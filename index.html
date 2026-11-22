@@ -45,12 +45,18 @@ select{font:inherit;font-size:.95rem;padding:9px 8px;border-radius:10px;border:1
 .act button{flex:1;font:inherit;font-weight:700;padding:12px;border-radius:12px;border:1px solid var(--ink);background:var(--card);color:var(--ink);cursor:pointer}
 .act button.p{background:var(--ink);color:var(--bg)}
 .act button:disabled{opacity:.4}
+.exit{display:none}
+body.fs header,body.fs .opts,body.fs #undo{display:none}
+body.fs main{max-width:none;min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;justify-content:center;align-items:center}
+body.fs #board,body.fs .score,body.fs #status,body.fs .act{width:min(100%,calc(100vh - 200px))}
+body.fs #board,body.fs .score,body.fs #status,body.fs .act{width:min(100%,calc(100dvh - 200px))}
+body.fs .exit{display:block}
 </style>
 </head>
 <body>
 <main>
 <header><h1><span class="x">X</span><span class="o">O</span></h1>
-<div class="icons"><button id="snd" aria-label="Son">🔊</button><button id="thm" aria-label="Thème clair ou sombre">◐</button></div></header>
+<div class="icons"><button id="fsb" aria-label="Plein écran">⛶</button><button id="snd" aria-label="Son">🔊</button><button id="thm" aria-label="Thème clair ou sombre">◐</button></div></header>
 <div class="opts">
 <label>Mode<select id="mode"><option value="ai">Contre l’IA</option><option value="2p">À deux</option></select></label>
 <label>Grille<select id="size"><option value="3">3×3 (aligner 3)</option><option value="4">4×4 (aligner 4)</option><option value="5">5×5 (aligner 4)</option><option value="6">6×6 (aligner 5)</option></select></label>
@@ -62,7 +68,7 @@ select{font:inherit;font-size:.95rem;padding:9px 8px;border-radius:10px;border:1
 <div class="score"><span class="x" id="sx"></span><span id="sd"></span><span class="o" id="so"></span></div>
 <div id="status" aria-live="polite"></div>
 <div id="board"></div>
-<div class="act"><button id="undo">Annuler</button><button id="again" class="p">Rejouer</button></div>
+<div class="act"><button id="undo">Annuler</button><button id="again" class="p">Rejouer</button><button id="exit" class="exit">Quitter</button></div>
 </main>
 <script>
 var $=function(i){return document.getElementById(i)};
@@ -132,6 +138,12 @@ function applyBg(i){var r=document.documentElement.style;VN.forEach(function(n,k
 PRE.forEach(function(p,i){var o=document.createElement("option");o.value=i;o.textContent=p[0];$("bgc").appendChild(o)});
 $("bgc").onchange=function(){applyBg(+this.value)};
 try{var s=+localStorage.getItem("xo-bg");if(s>0&&s<PRE.length){$("bgc").value=s;applyBg(s)}}catch(e){}
+function setFs(on){document.body.classList.toggle("fs",on);try{var d=document,e=d.documentElement,p;
+if(on){var f=e.requestFullscreen||e.webkitRequestFullscreen;if(f)p=f.call(e)}
+else if(d.fullscreenElement||d.webkitFullscreenElement){var g=d.exitFullscreen||d.webkitExitFullscreen;if(g)p=g.call(d)}
+if(p&&p.catch)p.catch(function(){})}catch(x){}}
+$("fsb").onclick=function(){setFs(true)};$("exit").onclick=function(){setFs(false)};
+document.addEventListener("fullscreenchange",function(){if(!document.fullscreenElement)document.body.classList.remove("fs")});
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 newGame(true);
 </script>
