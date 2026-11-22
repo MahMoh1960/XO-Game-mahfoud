@@ -51,6 +51,8 @@ body.fs main{max-width:none;min-height:100vh;min-height:100dvh;display:flex;flex
 body.fs #board,body.fs .score,body.fs #status,body.fs .act{width:min(100%,calc(100vh - 200px))}
 body.fs #board,body.fs .score,body.fs #status,body.fs .act{width:min(100%,calc(100dvh - 200px))}
 body.fs .exit{display:block}
+body.fs main>*{flex:none}
+.c{min-width:0;min-height:0;overflow:hidden}
 </style>
 </head>
 <body>
@@ -94,7 +96,7 @@ var depth=N===3?9:N===4?4:3,best=-Infinity,bm=[],mv=cands(board);
 if(empties(board).length===N*N)return N===3?pick([0,2,4,6,8]):(N/2|0)*N+(N/2|0);
 mv.forEach(function(i){board[i]=p;var v=winLine(board)?1e7:-nega(board,depth-1,-Infinity,Infinity,q);board[i]="";if(v>best){best=v;bm=[i]}else if(v===best)bm.push(i)});return pick(bm)}
 function mark(t){var s=t==="X"?'<path class="X" d="M18 18L82 82M82 18L18 82" pathLength="100"/>':'<circle class="O" cx="50" cy="50" r="33" pathLength="100"/>';return '<svg viewBox="0 0 100 100" aria-hidden="true">'+s+'</svg>'}
-function render(line){var B=$("board");B.style.gridTemplateColumns="repeat("+N+",1fr)";B.innerHTML="";
+function render(line){var B=$("board");B.style.gridTemplateColumns=B.style.gridTemplateRows="repeat("+N+",minmax(0,1fr))";B.innerHTML="";
 board.forEach(function(v,i){var b=document.createElement("button");b.className="c"+(line&&line.indexOf(i)>-1?" win":"");b.setAttribute("aria-label","Case "+((i/N|0)+1)+","+(i%N+1)+(v?" "+v:""));
 b.innerHTML=v?mark(v):"";b.onclick=function(){play(i)};B.appendChild(b)});
 $("sx").textContent="X : "+sc.X;$("so").textContent="O : "+sc.O;$("sd").textContent="Nuls : "+sc.D;
