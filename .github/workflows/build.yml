@@ -26,8 +26,8 @@ jobs:
           distribution: temurin
           java-version: 21
 
-      - name: Installer le SDK Android
-        uses: android-actions/setup-android@v3
+      - name: Accepter les licences Android
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses || true
 
       - name: Préparer les fichiers web
         run: |
